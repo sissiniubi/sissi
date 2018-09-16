@@ -1,0 +1,71 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+#include <iostream>
+using namespace std ; 
+
+int main ()
+{
+	int k , i , j , n , m ; 
+	cout<<"请输入想要排序数字数量";
+	cin >> n ; 
+	int in[n] ;
+	printf("请任意输入%d个数字\n" , n );
+	for ( m=0 ; m<n ; m++ )
+	{
+		cin >> in[m] ;
+	}
+	for ( i=0 ; i<=1 ; i++ )
+	{
+		if ( in[i]>=in[i+1])
+		{
+			k=in[i+1];
+			in[i+1]=in[i];
+			in[i]=k;
+		}
+		for ( j=0 ; j < n-i-1 ; j  ++ )
+		{
+			if ( in[j]>=in[j+1])
+			{
+				k=in[j+1];
+				in[j+1]=in[j];
+				in[j]=k;
+			}	
+		}
+	}
+	for ( m=0 ; m<n ; m++ )
+	{
+		cout << in[m] << " " ;
+	}
+	return 0 ;
+ } 
