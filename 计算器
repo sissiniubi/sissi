@@ -1,0 +1,114 @@
+#include <iostream>
+#include <stack>
+#include <typeinfo>
+using namespace std ;
+template <typename E , typename T> int change (E stacks , T stackn){
+	stack <double> oprt ;
+	double i , j , k , count , tem , answer ; // i为计数器，j为进行运算时前一个数字，k为进行运算时后一个数字，count为运算后得到结果值，tem为记录输入栈弹出数字值的过程变量 
+	char op ; // op记录输入栈弹出运算符的过程变量 
+	while(stacks.size() != 0 && stackn.size() != 0)
+	{
+		if (stacks.top() == "+")
+		{
+			k = stackn.top() ;
+			j = stackn.top() ;
+			stackn.pop(2) ;
+			count = j + k ;
+			oprt.push(count) ;
+		}
+		else if (stacks.top() == "*")
+		{
+			k = stackn.top() ;
+			j = stackn.top() ;
+			stackn.pop(2) ;
+			count = j * k ;
+			oprt.push(count) ;
+		} 
+		else if (stacks.top() == "/")
+		{
+			k = stackn.top() ;
+			j = stackn.top() ;
+			stackn.pop(2) ;
+			count = j / k ;
+			oprt.push(count) ;
+		}
+		else if (stack.top() == "-")
+		{
+			k = stackn.top() ;
+			j = stackn.top() ;
+			stackn.pop(2) ;
+			count = j - k ;
+			oprt.push(count) ;
+		}
+		if (stack.top() == "#")
+		{
+			k = stackn.top() ;
+			stackn.pop() ;
+			count = 0 - k ;
+			oprt.push(count) ;
+		}
+		stacks.pop() ;
+	}
+	while(stacks.size() != 0 && stackn.size() == 0)
+	{
+		if (stacks.top() == "+")
+		{
+			k = oprt.top() ;
+			j = oprt.top() ;
+			oprt.pop(2) ;
+			count = j + k ;
+			oprt.push(count) ;
+		}
+		else if (stacks.top() == "*")
+		{
+			k = oprt.top() ;
+			j = oprt.top() ;
+			oprt.pop(2) ;
+			count = j * k ;
+			oprt.push(count) ;
+		} 
+		else if (stacks.top() == "/")
+		{
+			k = oprt.top() ;
+			j = oprt.top() ;
+			oprt.pop(2) ;
+			count = j / k ;
+			oprt.push(count) ;
+		}
+		else if (stack.top() == "-")
+		{
+			k = oprt.top() ;
+			j = oprt.top() ;
+			oprt.pop(2) ;
+			count = j - k ;
+			oprt.push(count) ;
+		}
+		if (stack.top() == "#")
+		{
+			k = oprt.top() ;
+			oprt.pop() ;
+			count = 0 - k ;
+			oprt.push(count) ;
+		}
+		stacks.pop() ;
+	}
+	answer = oprt.top() ;
+	return answer ;
+}
+int main () {
+	stack <double> n ;
+	stack <char> s ;
+	n.push(1) ;
+	n.push(2) ;
+	s.push("+") ;
+	n.push(8) ;
+	n.push(2) ; 
+	s.push("-") ;
+	n.push(7) ;
+	n.push(4) ;
+	s.push("-") ;
+	s.push("/") ;
+	s.push("*") ;
+	cout << change(s,n) << endl ;
+	return 0 ;
+} 
