@@ -1,46 +1,53 @@
 #include <iostream>
 #include <stack>
 #include <typeinfo>
+#include <string.h>
+#include <math.h>
 using namespace std ;
+//函数输入两个栈，每识别一个字符栈就从数字栈中弹出对应目数个元素进行计算，将得到的结果放入临时操作栈，输入数字栈中数字使用结束后开始使用临时操作栈直到字符栈中元素用完。 
 template <typename E , typename T> int change (E stacks , T stackn){
-	stack <double> oprt ;
-	double i , j , k , count , tem , answer ; // i为计数器，j为进行运算时前一个数字，k为进行运算时后一个数字，count为运算后得到结果值，tem为记录输入栈弹出数字值的过程变量 
+	stack <float> oprt ;
+	float i , j , k , count , tem , answer ; // i为计数器，j为进行运算时前一个数字，k为进行运算时后一个数字，count为运算后得到结果值，tem为记录输入栈弹出数字值的过程变量 
 	char op ; // op记录输入栈弹出运算符的过程变量 
 	while(stacks.size() != 0 && stackn.size() != 0)
 	{
-		if (stacks.top() == "+")
+		if (&stacks.top() == "+")
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
-			stackn.pop(2) ;
+			stackn.pop() ;
+			stackn.pop() ;
 			count = j + k ;
 			oprt.push(count) ;
 		}
-		else if (stacks.top() == "*")
+		else if (&stacks.top() == "*")
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
-			stackn.pop(2) ;
+			stackn.pop() ;
+			stackn.pop() ;
 			count = j * k ;
 			oprt.push(count) ;
 		} 
-		else if (stacks.top() == "/")
+		else if (&stacks.top() == "/")
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
-			stackn.pop(2) ;
+			stackn.pop() ;
+			stackn.pop() ;
 			count = j / k ;
 			oprt.push(count) ;
 		}
-		else if (stack.top() == "-")
+		else if (&stacks.top() == "-")
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
-			stackn.pop(2) ;
+			stackn.pop() ;
+			stackn.pop() ;
 			count = j - k ;
 			oprt.push(count) ;
 		}
-		if (stack.top() == "#")
+		if (&stacks.top() == "#")
 		{
 			k = stackn.top() ;
 			stackn.pop() ;
@@ -51,39 +58,43 @@ template <typename E , typename T> int change (E stacks , T stackn){
 	}
 	while(stacks.size() != 0 && stackn.size() == 0)
 	{
-		if (stacks.top() == "+")
+		if (&stacks.top() == "+")
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
-			oprt.pop(2) ;
+			oprt.pop() ;
+			oprt.pop() ;
 			count = j + k ;
 			oprt.push(count) ;
 		}
-		else if (stacks.top() == "*")
+		else if (&stacks.top() == "*")
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
-			oprt.pop(2) ;
+			oprt.pop() ;
+			oprt.pop() ;
 			count = j * k ;
 			oprt.push(count) ;
 		} 
-		else if (stacks.top() == "/")
+		else if (&stacks.top() == "/")
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
-			oprt.pop(2) ;
+			oprt.pop() ;
+			oprt.pop() ;
 			count = j / k ;
 			oprt.push(count) ;
 		}
-		else if (stack.top() == "-")
+		else if (&stacks.top() == "-")
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
-			oprt.pop(2) ;
+			oprt.pop() ;
+			oprt.pop() ;
 			count = j - k ;
 			oprt.push(count) ;
 		}
-		if (stack.top() == "#")
+		if (&stacks.top() == "#")
 		{
 			k = oprt.top() ;
 			oprt.pop() ;
@@ -95,6 +106,189 @@ template <typename E , typename T> int change (E stacks , T stackn){
 	answer = oprt.top() ;
 	return answer ;
 }
+
+int is_left_brackets(char Equation){
+	if (!isalnum(Equation) && (Equation == '(' || 
+	Equation == '[' || 
+	Equation == '{' ))
+	{ return 1;}
+	return 0;
+}
+
+int is_right_brackets(char Equation){
+	if (!isalnum(Equation) && (Equation == ')' || 
+	Equation == ']' || 
+	Equation == '}' ))
+	{ return 1;}
+	return 0;
+}
+
+int is_symbol(char Equation){
+	if (!isalnum(Equation) && ( 
+	Equation == '+' || 
+	Equation == '-' || 
+	Equation == '*' || 
+	Equation == '/' || 
+	Equation == '#' 
+	))
+	{return 1;}
+	return 0;
+}
+
+int is_digital(char Equation,float *temp1,float *a,float *b,float *c,int *i){
+	if (isdigit(Equation)){
+		*temp1=(*temp1)*(*a)+(Equation-'0')*pow(*b,*i++);
+		return 1;
+	}
+	if (Equation == '.' && *c==0){
+		*a=1;
+		*b=0.1;
+		*c++;
+		*i=*i+1;
+		return 1;
+	}
+	*a=10;
+	*b=1;
+	*c=0;
+	*i=0;
+	if (is_symbol(Equation)){
+	*temp1=0;}
+	return 0;
+}
+
+
+
+
+main()
+{
+char Equation;
+int i=0;
+float temp1=0;
+float a=10;float b=1;float c=0;
+stack<char> Symbol_Stack,Operator_Stack,New_Symbol_Stack;
+stack<float> Number_Stack,New_Number_Stack;
+int test1=0; int test2=0; int test3=0;int test4=0; int test5=0;
+
+
+cout<<"input e to end the process:"<<endl; 
+while (1)
+{
+	cin>>Equation;
+	if (Equation =='e'){
+		Number_Stack.push(temp1);
+		break;
+	}
+		if(is_left_brackets(Equation)){
+			
+			Operator_Stack.push(Equation);
+			test1++;
+			test2++;
+			test4++;
+		}
+		
+		
+		if(is_symbol(Equation)){
+			Operator_Stack.push(Equation);
+			Number_Stack.push(temp1);
+			test2++;
+			test3++;
+			if (test4!=0){
+				cout<<"wrong!"<<endl;
+				break; 
+			}
+			test5++;
+		}
+		
+		if(is_digital(Equation,&temp1,&a,&b,&c,&i))
+		{
+			if(i==2){
+				cout<<"wrong!"<<endl;
+				break;
+			}
+			test2++;
+			test3--;
+			test4=0;
+			test5=0;
+		}
+		
+		if(is_right_brackets(Equation)){
+			
+			if (test1==0){
+				cout<<"wrong!"<<endl;
+				break;
+			}
+			
+			if(test5!=0){
+				cout<<"wrong!"<<endl;
+				break;
+			}
+			
+			test1--;
+			test2++;
+			
+			while(!is_left_brackets(Operator_Stack.top()))
+			{   
+			Symbol_Stack.push(Operator_Stack.top());
+				Operator_Stack.pop();
+		}
+				Operator_Stack.pop();
+		}
+
+if (test2==0){
+	cout<<"wrong!"<<endl;
+	break;
+}
+test2=0;
+
+if( (test3!=0) && (test3!=-1) ){
+	cout<<"wrong!"<<endl;
+	break;
+}
+}
+
+if(test1!=0){
+	cout<<"wrong!"<<endl;
+}
+
+
+while(!Operator_Stack.empty()){
+		Symbol_Stack.push(Operator_Stack.top());
+		Operator_Stack.pop();
+	}
+
+while(!Symbol_Stack.empty())
+{
+	New_Symbol_Stack.push(Symbol_Stack.top());
+	Symbol_Stack.pop();
+}
+
+while(!Number_Stack.empty())
+{
+	New_Number_Stack.push(Number_Stack.top());
+	Number_Stack.pop(); 
+}
+	cout << change(Operator_Stack,Number_Stack) << endl ;
+}
+
+
+
+
+/*
+while(!New_Symbol_Stack.empty())
+{
+	cout<<New_Symbol_Stack.top();
+	New_Symbol_Stack.pop();
+}
+
+while(!New_Number_Stack.empty())
+{
+	cout<<New_Number_Stack.top();
+	New_Number_Stack.pop(); 
+}
+
+
+}
+
 int main () {
 	stack <double> n ;
 	stack <char> s ;
@@ -107,8 +301,8 @@ int main () {
 	n.push(7) ;
 	n.push(4) ;
 	s.push("-") ;
-	s.push("/") ;
 	s.push("*") ;
+	s.push("/") ;
 	cout << change(s,n) << endl ;
 	return 0 ;
-} 
+} */
