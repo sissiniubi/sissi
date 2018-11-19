@@ -4,6 +4,7 @@
 #include <string.h>
 #include <math.h>
 using namespace std ;
+
 //函数输入两个栈，每识别一个字符栈就从数字栈中弹出对应目数个元素进行计算，将得到的结果放入临时操作栈，输入数字栈中数字使用结束后开始使用临时操作栈直到字符栈中元素用完。 
 template <typename E , typename T> int change (E stacks , T stackn){
 	stack <float> oprt ;
@@ -11,7 +12,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 	char op ; // op记录输入栈弹出运算符的过程变量 
 	while(stacks.size() != 0 && stackn.size() != 0)
 	{
-		if (&stacks.top() == "+")
+		if (stacks.top() == '+')
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
@@ -20,7 +21,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j + k ;
 			oprt.push(count) ;
 		}
-		else if (&stacks.top() == "*")
+		else if (stacks.top() == '*')
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
@@ -29,7 +30,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j * k ;
 			oprt.push(count) ;
 		} 
-		else if (&stacks.top() == "/")
+		else if (stacks.top() == '/')
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
@@ -38,7 +39,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j / k ;
 			oprt.push(count) ;
 		}
-		else if (&stacks.top() == "-")
+		else if (stacks.top() == '-')
 		{
 			k = stackn.top() ;
 			j = stackn.top() ;
@@ -47,7 +48,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j - k ;
 			oprt.push(count) ;
 		}
-		if (&stacks.top() == "#")
+		if (stacks.top() == '#')
 		{
 			k = stackn.top() ;
 			stackn.pop() ;
@@ -58,7 +59,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 	}
 	while(stacks.size() != 0 && stackn.size() == 0)
 	{
-		if (&stacks.top() == "+")
+		if (stacks.top() == '+')
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
@@ -67,7 +68,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j + k ;
 			oprt.push(count) ;
 		}
-		else if (&stacks.top() == "*")
+		else if (stacks.top() == '*')
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
@@ -76,7 +77,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j * k ;
 			oprt.push(count) ;
 		} 
-		else if (&stacks.top() == "/")
+		else if (stacks.top() == '/')
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
@@ -85,7 +86,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j / k ;
 			oprt.push(count) ;
 		}
-		else if (&stacks.top() == "-")
+		else if (stacks.top() == '-')
 		{
 			k = oprt.top() ;
 			j = oprt.top() ;
@@ -94,7 +95,7 @@ template <typename E , typename T> int change (E stacks , T stackn){
 			count = j - k ;
 			oprt.push(count) ;
 		}
-		if (&stacks.top() == "#")
+		if (stacks.top() == '#')
 		{
 			k = oprt.top() ;
 			oprt.pop() ;
@@ -267,7 +268,21 @@ while(!Number_Stack.empty())
 	New_Number_Stack.push(Number_Stack.top());
 	Number_Stack.pop(); 
 }
-	cout << change(Operator_Stack,Number_Stack) << endl ;
+	while (New_Symbol_Stack.size() != 0)
+	{
+		if (!New_Number_Stack.empty()){
+			cout<<New_Number_Stack.top() << " " ;
+			New_Number_Stack.pop() ;
+		}
+		if(!New_Number_Stack.empty()){
+			cout<<New_Number_Stack.top() << " " ;
+			New_Number_Stack.pop() ;
+		}
+		cout << New_Symbol_Stack.top() << " " ;
+		New_Symbol_Stack.pop() ;
+	}
+	cout << change(New_Symbol_Stack,New_Number_Stack) << endl ;
+	return 0 ;
 }
 
 
