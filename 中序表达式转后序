@@ -2,6 +2,7 @@
 #include <stack>
 #include <map>
 #include <string> 
+#include <typeinfo>
 
 using namespace std ;
 
@@ -17,18 +18,77 @@ int is_niubi (string n) // 检测运算符号优先级
 	}
 }
 
+template <typename E> E getchar (char &ch)
+{
+	
+}
+/*
+int is_digital(char Equation,float *temp1,float *a,float *b,float *c,int *i){
+	if (isdigit(Equation)){
+		*temp1=(*temp1)*(*a)+(Equation-'0')*pow(*b,*i++);
+		return 1;
+	}
+	if (Equation == '.' && *c==0){
+		*a=1;
+		*b=0.1;
+		*c++;
+		*i=*i+1;
+		return 1;
+	}
+	*a=10;
+	*b=1;
+	*c=0;
+	*i=0;
+	if (is_symbol(Equation)){
+	*temp1=0;}
+	return 0;
+}
+*/
+
+int is_symbol(char Equation){
+	if (!isalnum(Equation) && ( 
+	Equation == '+' || 
+	Equation == '-' || 
+	Equation == '*' || 
+	Equation == '/' || 
+	Equation == '#' 
+	))
+	{return 1;}
+	return 0;
+}
+
 int main ( ) // str 为输入的中序表达式 
 {
-	string str[5] = {"1","+","2","+","3"} ; 
+	string str[10000] ;
+	string n ;
+	int tem=0 ;
+	cout << "输入e结束输入" ;
+	while (1)
+	{
+		cin >> n ;
+		if (n == "e")
+		{
+			break ;
+		}
+		else 
+		{
+			str[tem] = n ;
+			tem++ ;
+		}
+	} 
 	//规定一个栈oprt为字符栈， 一个字符数组记录后续输出
 	stack <string> op ; 
 	string end_out [10000] ;
-	int j=0 ;
+	int j=0 , i=0 ;
 	//从左到右扫描中缀表达式
-	for(int i=0 ; i<5 ; i++)
+	while (1)
 	{
+		if (i>=tem)
+		{
+			break;
+		}
 		//如果当前字符串不是运算符号有两条路（）或数字 
-		if (str[i] != "+" || str[i] != "-" || str[i] != "*" || str[i] != "/") 
+		if (str[i] != "+" && str[i] != "-" && str[i] != "*" && str[i] != "/") 
 		{
 			if(str[i] == "(" )
 			{
@@ -58,7 +118,7 @@ int main ( ) // str 为输入的中序表达式
 				j ++ ;
 			}
 		}
-		else if (str[i] == "+" || str[i] == "-" || str[i] == "*" || str[i] == "/")
+		else 
 		{
 			//判断当前符号与栈顶符号优先级
 			if (is_niubi(op.top()) < is_niubi(str[i]) && !op.empty()) 
@@ -77,11 +137,51 @@ int main ( ) // str 为输入的中序表达式
 				op.push(str[i]) ;  
 			}
 		}
+		i++ ; 
 	}
+	cout << end_out[0] << end_out[1] ;
+	/*
+	stack <int> opnum ;
 	for (int k=0 ; k < 5 ; k++)
 	{
-		cout << end_out[k] << " " ; 
+		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
+		if (is_digital())
+		{
+		 	
+		}
+		else if (is_symbol(str[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
+		{
+			if (str[k] == '+')
+			{
+				float n = opnum.top() ;
+				opnum.pop() ;
+				float o = opnum.top() ;
+				opnum.pop() ;
+				float count = n + o ;
+				opnum.push(count) ;  
+			}
+			else if (str[k] == '-')
+			{
+				
+			}
+			else if (str[k] == '*')
+			{
+				
+			}
+			else if (str[k] == '/' )
+			{
+				
+			}
+			else if (str[k] == "#")
+			{
+				int p = -1 ; // 此时其后必有数字，将数字字符转化为数字赋值给strk=0 
+				str[k+1] = strk * p  ;// 再将赋值的strk转化为字符串赋值给原字符串数组k+1位置 
+			}
+		}
 	}
+	//直到输入的string数组全部读完，如果数字栈中只有一个元素，则返回数字栈中的元素 ，否则返回输入有误 
+	cout <<  opnum.top()  ;
+*/
 	return 0 ; 
 	
 }
