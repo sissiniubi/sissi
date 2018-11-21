@@ -63,25 +63,12 @@ int is_symbol(char Equation){
 
 int main ( ) // str 为输入的中序表达式 
 {
-	string str = "(1+2)*3" ;
-	int tem=0 ; /*
-	cout << "输入e结束输入" ;
-	while (1)
-	{
-		cin >> str ;
-		if (n == "e")
-		{
-			break ;
-		}/*
-		else 
-		{
-			str[tem] = n ;
-			tem++ ;
-		}
-	} */
+	string str ;
+	int tem=0 ; 
+	cin >> str ; 
 	//规定一个栈oprt为字符栈， 一个字符数组记录后续输出
 	stack <char> op ; 
-	string end_out [100] ;
+	string end_out [str.length()] ;
 	int j=0 , i=0 ;
 	//从左到右扫描中缀表达式
 	for (i ; i<str.length() ; i++)
@@ -108,7 +95,7 @@ int main ( ) // str 为输入的中序表达式
 			else if (is_niubi(op.top()) >= is_niubi(str[i])) // 退出栈顶元素，当前元素入栈 
 			{
 				//cout << "第一个while没问题在" << i << endl ;
-				cout << op.top() ;
+				end_out[j] = op.top() ;
 				op.pop() ;
 				j++ ;
 				op.push(str[i]) ;
@@ -129,7 +116,7 @@ int main ( ) // str 为输入的中序表达式
 			{
 				if(op.top() != '(' )
 				{
-					cout << op.top() ;
+					end_out[j] = op.top() ;
 					op.pop() ;
 					j ++ ;
 				}
@@ -145,14 +132,19 @@ int main ( ) // str 为输入的中序表达式
 		else
 		{
 			//cout << "第4个if没问题在" << i << endl ;
-			cout << str[i] << " ";
+			end_out[j] = str[i] ;
 			j ++ ;
 		}
 	}
 	while (!op.empty() )
 	{
-		cout << op.top() ;
-		op.pop() ;	
+		end_out[j] = op.top() ;
+		op.pop() ;
+		j++ ;
+	}
+	for (int k=0 ; k<7 ; k++)
+	{
+		cout << end_out[k] ;
 	}
 	 
 	//cout << end_out[0] << end_out[1] ;
