@@ -1,127 +1,26 @@
-#include <iostream>
+#include <iostream> 
 #include <stack>
+#include <map>
+#include <string> 
 #include <typeinfo>
-#include <string.h>
 #include <math.h>
+
 using namespace std ;
 
-//函数输入两个栈，每识别一个字符栈就从数字栈中弹出对应目数个元素进行计算，将得到的结果放入临时操作栈，输入数字栈中数字使用结束后开始使用临时操作栈直到字符栈中元素用完。 
-template <typename E , typename T> int change (E stacks , T stackn){
-	stack <float> oprt ;
-	float i , j , k , count , tem , answer ; // i为计数器，j为进行运算时前一个数字，k为进行运算时后一个数字，count为运算后得到结果值，tem为记录输入栈弹出数字值的过程变量 
-	char op ; // op记录输入栈弹出运算符的过程变量 
-	while(stacks.size() != 0 && stackn.size() != 0)
+int is_niubi (char n) // 检测运算符号优先级 
+{
+	if (n == '*' || n == '/' )
 	{
-		if (stacks.top() == '+')
-		{
-			k = stackn.top() ;
-			j = stackn.top() ;
-			stackn.pop() ;
-			stackn.pop() ;
-			count = j + k ;
-			oprt.push(count) ;
-		}
-		else if (stacks.top() == '*')
-		{
-			k = stackn.top() ;
-			j = stackn.top() ;
-			stackn.pop() ;
-			stackn.pop() ;
-			count = j * k ;
-			oprt.push(count) ;
-		} 
-		else if (stacks.top() == '/')
-		{
-			k = stackn.top() ;
-			j = stackn.top() ;
-			stackn.pop() ;
-			stackn.pop() ;
-			count = j / k ;
-			oprt.push(count) ;
-		}
-		else if (stacks.top() == '-')
-		{
-			k = stackn.top() ;
-			j = stackn.top() ;
-			stackn.pop() ;
-			stackn.pop() ;
-			count = j - k ;
-			oprt.push(count) ;
-		}
-		if (stacks.top() == '#')
-		{
-			k = stackn.top() ;
-			stackn.pop() ;
-			count = 0 - k ;
-			oprt.push(count) ;
-		}
-		stacks.pop() ;
+		return 2 ;
 	}
-	while(stacks.size() != 0 && stackn.size() == 0)
+	else if (n == '+' || n == '-')
 	{
-		if (stacks.top() == '+')
-		{
-			k = oprt.top() ;
-			j = oprt.top() ;
-			oprt.pop() ;
-			oprt.pop() ;
-			count = j + k ;
-			oprt.push(count) ;
-		}
-		else if (stacks.top() == '*')
-		{
-			k = oprt.top() ;
-			j = oprt.top() ;
-			oprt.pop() ;
-			oprt.pop() ;
-			count = j * k ;
-			oprt.push(count) ;
-		} 
-		else if (stacks.top() == '/')
-		{
-			k = oprt.top() ;
-			j = oprt.top() ;
-			oprt.pop() ;
-			oprt.pop() ;
-			count = j / k ;
-			oprt.push(count) ;
-		}
-		else if (stacks.top() == '-')
-		{
-			k = oprt.top() ;
-			j = oprt.top() ;
-			oprt.pop() ;
-			oprt.pop() ;
-			count = j - k ;
-			oprt.push(count) ;
-		}
-		if (stacks.top() == '#')
-		{
-			k = oprt.top() ;
-			oprt.pop() ;
-			count = 0 - k ;
-			oprt.push(count) ;
-		}
-		stacks.pop() ;
+		return 1 ;
 	}
-	answer = oprt.top() ;
-	return answer ;
-}
-
-int is_left_brackets(char Equation){
-	if (!isalnum(Equation) && (Equation == '(' || 
-	Equation == '[' || 
-	Equation == '{' ))
-	{ return 1;}
-	return 0;
-}
-
-int is_right_brackets(char Equation){
-	if (!isalnum(Equation) && (Equation == ')' || 
-	Equation == ']' || 
-	Equation == '}' ))
-	{ return 1;}
-	return 0;
+	else if (n == '(')
+	{
+		return 0 ;
+	}
 }
 
 int is_symbol(char Equation){
@@ -129,195 +28,248 @@ int is_symbol(char Equation){
 	Equation == '+' || 
 	Equation == '-' || 
 	Equation == '*' || 
-	Equation == '/' || 
-	Equation == '#' 
+	Equation == '/' ||
+	Equation == '#'
 	))
 	{return 1;}
 	return 0;
 }
-
-int is_digital(char Equation,float *temp1,float *a,float *b,float *c,int *i){
-	if (isdigit(Equation)){
-		*temp1=(*temp1)*(*a)+(Equation-'0')*pow(*b,*i++);
-		return 1;
-	}
-	if (Equation == '.' && *c==0){
-		*a=1;
-		*b=0.1;
-		*c++;
-		*i=*i+1;
-		return 1;
-	}
-	*a=10;
-	*b=1;
-	*c=0;
-	*i=0;
-	if (is_symbol(Equation)){
-	*temp1=0;}
-	return 0;
-}
-
-
-
-
-main()
+int main ( ) // str 为输入的中序表达式 
 {
-char Equation;
-int i=0;
-float temp1=0;
-float a=10;float b=1;float c=0;
-stack<char> Symbol_Stack,Operator_Stack,New_Symbol_Stack;
-stack<float> Number_Stack,New_Number_Stack;
-int test1=0; int test2=0; int test3=0;int test4=0; int test5=0;
-
-
-cout<<"input e to end the process:"<<endl; 
-while (1)
-{
-	cin>>Equation;
-	if (Equation =='e'){
-		Number_Stack.push(temp1);
-		break;
-	}
-		if(is_left_brackets(Equation)){
-			
-			Operator_Stack.push(Equation);
-			test1++;
-			test2++;
-			test4++;
-		}
-		
-		
-		if(is_symbol(Equation)){
-			Operator_Stack.push(Equation);
-			Number_Stack.push(temp1);
-			test2++;
-			test3++;
-			if (test4!=0){
-				cout<<"wrong!"<<endl;
-				break; 
-			}
-			test5++;
-		}
-		
-		if(is_digital(Equation,&temp1,&a,&b,&c,&i))
-		{
-			if(i==2){
-				cout<<"wrong!"<<endl;
-				break;
-			}
-			test2++;
-			test3--;
-			test4=0;
-			test5=0;
-		}
-		
-		if(is_right_brackets(Equation)){
-			
-			if (test1==0){
-				cout<<"wrong!"<<endl;
-				break;
-			}
-			
-			if(test5!=0){
-				cout<<"wrong!"<<endl;
-				break;
-			}
-			
-			test1--;
-			test2++;
-			
-			while(!is_left_brackets(Operator_Stack.top()))
-			{   
-			Symbol_Stack.push(Operator_Stack.top());
-				Operator_Stack.pop();
-		}
-				Operator_Stack.pop();
-		}
-
-if (test2==0){
-	cout<<"wrong!"<<endl;
-	break;
-}
-test2=0;
-
-if( (test3!=0) && (test3!=-1) ){
-	cout<<"wrong!"<<endl;
-	break;
-}
-}
-
-if(test1!=0){
-	cout<<"wrong!"<<endl;
-}
-
-
-while(!Operator_Stack.empty()){
-		Symbol_Stack.push(Operator_Stack.top());
-		Operator_Stack.pop();
-	}
-
-while(!Symbol_Stack.empty())
-{
-	New_Symbol_Stack.push(Symbol_Stack.top());
-	Symbol_Stack.pop();
-}
-
-while(!Number_Stack.empty())
-{
-	New_Number_Stack.push(Number_Stack.top());
-	Number_Stack.pop(); 
-}
-	while (New_Symbol_Stack.size() != 0)
+	char Equation;
+	int ii=0;
+	float temp1=0;
+	int a=10;float b=1;float c=0;int cifang = 1 ;
+	string str ;
+	int tem=0 ;
+	cout << "请输入需计算算式，每个数字之间以:隔开，形如:#12.4:，可进行+-*/单目负计算"  ;
+	cin >> str ; 
+	//规定一个栈oprt为字符栈， 一个字符数组记录后续输出
+	stack <char> op ; 
+	string end_out ;
+	int j=0 , i=0 ;
+	//从左到右扫描中缀表达式
+	for (i ; i<str.length() ; i++)
 	{
-		if (!New_Number_Stack.empty()){
-			cout<<New_Number_Stack.top() << " " ;
-			New_Number_Stack.pop() ;
+		//如果当前字符串不是运算符号有两条路（）或数字
+		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'||str[i] == '('|| str[i] == ')')
+		{
+			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/') 
+			{
+			//判断当前符号与栈顶符号优先级
+				if( op.empty()) 
+				{
+					op.push(str[i]) ; 
+				}
+				else
+				{
+					if (is_niubi(op.top()) < is_niubi(str[i]) && op.top() != '(')
+					{
+						op.push(str[i]) ;
+					}
+					else if (is_niubi(op.top()) >= is_niubi(str[i])) // 退出栈顶元素，当前元素入栈 
+					{
+						end_out[j] = op.top() ;
+						op.pop() ;
+						j++ ;
+						op.push(str[i]) ;
+					}
+					else if (op.top() == '(')
+					{
+						op.push(str[i]) ;
+					}	  
+				}
+		} 
+		else if(str[i] == '(' )
+		{
+			op.push(str[i]) ;
+		} 
+		else if(str[i] == ')')
+		{
+			while(1)
+			{
+				if(op.top() != '(' )
+				{
+					end_out[j] = op.top() ;
+					op.pop() ;
+					j ++ ;
+				}
+				else if (op.top() == '(')
+				{
+					op.pop() ;
+					break ;
+				}
+					
+			}
 		}
-		if(!New_Number_Stack.empty()){
-			cout<<New_Number_Stack.top() << " " ;
-			New_Number_Stack.pop() ;
 		}
-		cout << New_Symbol_Stack.top() << " " ;
-		New_Symbol_Stack.pop() ;
+		else 
+		{
+			end_out[j] = str[i] ;
+			j ++ ;
+		}
 	}
-	cout << change(New_Symbol_Stack,New_Number_Stack) << endl ;
-	return 0 ;
+	while (!op.empty() )
+	{
+		end_out[j] = op.top() ;
+		op.pop() ;
+		j++ ;
+	}
+	cout << "后序输出为：" ; 
+	for (int k=0 ; k<j ; k++)
+	{
+		cout << end_out[k];
+	}
+	 
+//后续计算	
+	stack <float> opnum ;
+	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ;
+	for (int k=0 ; k < j ; k++)
+	{
+		cout << "jinlail" << endl ;
+		if (maohao == 2)
+		{
+			if (fushu == 1)
+			{
+				cout << "现在c是" << -c << endl ;
+				opnum.push(0-c) ;
+			}
+			else if (fuhao == 0)
+			{
+				cout << "现在c是" << c << endl ;
+				opnum.push(c) ;
+			}
+			else 
+			{
+				cout << "1输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			} 
+			maohao = 0 ;
+			xiaoshu = 0 ;
+			c = 0 ;
+			a = 10 ;
+			b = 1 ;
+			fushu = 0 ;
+			fuhao = 0 ;
+			cifang = 1 ;
+			cout << "现在有冒号" << maohao << "个" << endl ;
+		}
+		if(maohao > 2)
+		{
+			cout << "2输入错误，请退出程序重新输入" << endl ;
+			return 0 ;			 
+		}
+		if (xiaoshu > 1)
+		{
+			cout << "3输入错误，请退出程序重新输入" << endl ;
+			return 0 ;
+		}
+		if(end_out[k] == ':' )
+		{
+			maohao = maohao + 1 ;
+			cout << "现在有冒号" << maohao << "个" << endl ;
+		}
+		else if(isdigit(end_out[k]))
+		{
+			if(maohao == 1 && xiaoshu == 0)
+			{
+				c = c*a + (end_out[k] - '0') * b ;
+				//cout << "现在c是" << c << endl ;
+				//opnum.push(c) ; 
+			}
+			else if (maohao == 1 && xiaoshu == 1)
+			{
+				for (int lll=1 ; lll<cifang ; lll++)
+				{
+					b*=b ;
+				}
+				c = c + (end_out[k] - '0') * (b) ;
+				cifang ++ ;  
+			}
+			else //检验输入是否正确 
+			{
+				cout << "4输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
+		}
+		else if (end_out[k] == '.')
+		{
+			if (maohao == 1 && xiaoshu==0)
+			{
+				a = 1 ;
+				b = 0.1;
+				xiaoshu = 1 ;
+				cout << "现在b是" << b << "," << (b*cifang) << endl ;
+			}
+			else
+			{
+				cout << "5输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
+		}
+		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
+		else if (is_symbol(end_out[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
+		{
+			if (end_out[k] == '+')
+			{ 
+				float n = opnum.top() ;
+				opnum.pop() ;
+				float o = opnum.top() ;
+				opnum.pop() ;
+				float count = o+n ;
+				cout << "现在是" << count << endl ;
+				opnum.push(count) ;  
+			}
+			else if (end_out[k] == '-')
+			{
+				float n = opnum.top() ;
+				opnum.pop() ;
+				float o = opnum.top() ;
+				opnum.pop() ;
+				float count = o-n ;
+				cout << "现在是" << count << endl ;
+				opnum.push(count) ;
+			}
+			else if (end_out[k] == '*')
+			{
+				float n = opnum.top() ;
+				opnum.pop() ;
+				float o = opnum.top() ;
+				opnum.pop() ;
+				float count = o * n ;
+				cout << "现在是" << count << endl ;
+				opnum.push(count) ;
+			}
+			else if (end_out[k] == '/' )
+			{
+				float n = opnum.top() ;
+				opnum.pop() ;
+				float o = opnum.top() ;
+				opnum.pop() ;
+				float count = o / n ;
+				cout << "现在是" << count << endl ;
+				opnum.push(count) ;
+			}
+			else if (end_out[k] == '#')
+			{
+				if(maohao == 1)
+				{
+					fushu = 1 ;
+				} 
+			}
+			else
+			{
+				cout << "6输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
+		}
+		else 
+		{
+			cout << "第" << k << "位输入有误，请退出程序重新输入" << endl ;
+			return 0 ; 
+		}
+	}
+	//直到输入的string数组全部读完，如果数字栈中只有一个元素，则返回数字栈中的元素 ，否则返回输入有误 
+	cout <<  opnum.top()  ;
+	return 0 ; 	
 }
-
-
-
-
-/*
-while(!New_Symbol_Stack.empty())
-{
-	cout<<New_Symbol_Stack.top();
-	New_Symbol_Stack.pop();
-}
-
-while(!New_Number_Stack.empty())
-{
-	cout<<New_Number_Stack.top();
-	New_Number_Stack.pop(); 
-}
-
-
-}
-
-int main () {
-	stack <double> n ;
-	stack <char> s ;
-	n.push(1) ;
-	n.push(2) ;
-	s.push("+") ;
-	n.push(8) ;
-	n.push(2) ; 
-	s.push("-") ;
-	n.push(7) ;
-	n.push(4) ;
-	s.push("-") ;
-	s.push("*") ;
-	s.push("/") ;
-	cout << change(s,n) << endl ;
-	return 0 ;
-} */
