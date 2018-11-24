@@ -126,7 +126,6 @@ int main ( ) // str 为输入的中序表达式
 	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ;
 	for (int k=0 ; k < j ; k++)
 	{
-		cout << "jinlail" << endl ;
 		if (maohao == 2)
 		{
 			if (fushu == 1)
