@@ -63,6 +63,11 @@ int jiancha (string str)
 		if(str[k] == ':' )
 		{
 			maohao = maohao + 1 ;
+			if (maohao == 1 && !isdigit(str[k+1]) && !is_symbol(str[k+1]) || str[k+1] == ':')
+			{
+				cout<<endl<<"输入错了，请退出程序重新输入" ;
+				return 0 ;
+			}
 		}
 		else if(isdigit(str[k]))
 		{
@@ -121,6 +126,11 @@ int jiancha (string str)
 			cout<<endl<<"输入错了，请退出程序重新输入" ;
 			return 0 ; 
 		}
+	}
+	if (jisuan > dig)
+	{
+		cout<<endl<<"输入错了，请退出程序重新输入" ;
+		return 0 ; 
 	}
 	return 1 ;
 }
@@ -242,7 +252,7 @@ int main ( ) // str 为输入的中序表达式
 	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
 	for (int k=0 ; k < j ; k++)
 	{ 
-		//cout << "jinlai" ; 
+		cout << "jinlai" ; 
 		if (maohao == 2)
 		{
 			if (fushu == 1)
