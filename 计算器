@@ -19,30 +19,45 @@ int is_symbol(char Equation){
 }
 int jiancha (string str)
 {
-	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
+	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ; int jisuan=0 ; int digx;
+	int zuokuohao=0 ;
 	for (int k=0 ; k < str.length() ; k++)
 	{ 
 		if (maohao == 2)
 		{
-			if (fushu!=1 || fushu!=0)
+			if (fushu!=1 && fushu!=0)
 			{
-				cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "0单目负（#）输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			} 
+			if (xiaoshu == 1 && digx == dig)
+			{
+				cout << endl << "0小数点输入错误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
 			maohao = 0 ;
 			xiaoshu = 0 ;
 			fushu = 0 ;
 			fuhao = 0 ;
 			dig  = 0 ;
 		}
+		if (maohao == 0 && jisuan > 1)
+		{
+			cout << endl << "符号输入错误，请退出程序重新输入" ;
+			return 0 ; 
+		}
+		if (maohao == 1)
+		{
+			jisuan = 0 ;
+		}
 		if(maohao > 2)
 		{
-			cout << endl <<  "：输入错误，请退出程序重新输入" << endl ;
+			cout << endl <<  "1：输入错误，请退出程序重新输入" << endl ;
 			return 0 ;			 
 		}
 		if (xiaoshu > 1)
 		{
-			cout << endl << "小数点输入错误，请退出程序重新输入" << endl ;
+			cout << endl << "1小数点输入错误，请退出程序重新输入" << endl ;
 			return 0 ;
 		}
 		if(str[k] == ':' )
@@ -52,9 +67,9 @@ int jiancha (string str)
 		else if(isdigit(str[k]))
 		{
 			dig ++ ; 
-			if(maohao != 1 || (xiaoshu != 0 && xiaoshu!=1)) 
+			if(maohao != 1 && (xiaoshu != 0 && xiaoshu!=1)) 
 			{
-				cout << endl << "被计算数字输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "1被计算数字输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			}
 		}
@@ -63,19 +78,21 @@ int jiancha (string str)
 			if (maohao == 1 && xiaoshu==0 && dig != 0)
 			{
 				xiaoshu = 1 ;
+				digx = dig ;
 			}
 			else
 			{
-				cout << endl << "小数点输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "1小数点输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			}
 		}
 		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
 		else if (is_symbol(str[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
 		{
-			if (maohao%2 == 1)
+			jisuan ++ ;
+			if (maohao%2 == 1 && str[k]!='#')
 			{
-				cout << endl << "冒号个数不对，请退出程序重新输入" ;
+				cout << endl << "1冒号个数不对，请退出程序重新输入" ;
 				return 0 ;
 			}
 			if (str[k] == '#')
@@ -86,10 +103,23 @@ int jiancha (string str)
 				}
 				else 
 				{
-					cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
+					cout << endl << "1单目负（#）输入有误，请退出程序重新输入" << endl ;
 					return 0 ;
 				} 
 			}
+		}
+		else if (str[k] == '(')
+		{
+			zuokuohao ++ ;
+		}
+		else if (str[k] == ')')
+		{
+			zuokuohao = 0 ;
+		}
+		if (str[k] == '(' && str[k+1]!=':' && str[k+1]!='(')
+		{
+			cout<<endl<<"输入错了，请退出程序重新输入" ;
+			return 0 ; 
 		}
 	}
 	return 1 ;
@@ -119,6 +149,7 @@ int main ( ) // str 为输入的中序表达式
 	int a=10;double b=1;double c=0;int cifang = 1 ;
 	string str ;
 	int tem=0 ;
+	int null ;
 	cout << "请输入需计算算式，每个数字之间以:隔开，形如:#12.4:，可进行+-*/单目负计算"  ;
 	cin >> str ;
 	if (!jiancha(str))
@@ -132,7 +163,7 @@ int main ( ) // str 为输入的中序表达式
 	//从左到右扫描中缀表达式
 	for (i ; i<str.length() ; i++)
 	{
-		//如果当前字符串不是运算符号有两条路（）或数字
+		//如果当前字符串不是运算符号有两条路（）或数字 
 		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/'||str[i] == '('|| str[i] == ')')
 		{
 			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/') 
@@ -184,6 +215,10 @@ int main ( ) // str 为输入的中序表达式
 			}
 		}
 		}
+		else if (str[i] == '\n')
+		{
+			null = 0 ;
+		}
 		else 
 		{
 			end_out[j] = str[i] ;
@@ -207,6 +242,7 @@ int main ( ) // str 为输入的中序表达式
 	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
 	for (int k=0 ; k < j ; k++)
 	{ 
+		//cout << "jinlai" ; 
 		if (maohao == 2)
 		{
 			if (fushu == 1)
@@ -285,7 +321,7 @@ int main ( ) // str 为输入的中序表达式
 		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
 		else if (is_symbol(end_out[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
 		{
-			if (maohao%2 == 1)
+			if (maohao%2 == 1 && end_out[k]!='#')
 			{
 				cout << endl << "冒号个数不对，请退出程序重新输入" ;
 				return 0 ;
