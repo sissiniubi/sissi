@@ -38,8 +38,8 @@ int main ( ) // str 为输入的中序表达式
 {
 	char Equation;
 	int ii=0;
-	float temp1=0;
-	int a=10;float b=1;float c=0;int cifang = 1 ;
+	double temp1=0;
+	int a=10;double b=1;double c=0;int cifang = 1 ;
 	string str ;
 	int tem=0 ;
 	cout << "请输入需计算算式，每个数字之间以:隔开，形如:#12.4:，可进行+-*/单目负计算"  ;
@@ -122,25 +122,23 @@ int main ( ) // str 为输入的中序表达式
 	}
 	 
 //后续计算	
-	stack <float> opnum ;
-	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ;
+	stack <double> opnum ;
+	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
 	for (int k=0 ; k < j ; k++)
 	{
 		if (maohao == 2)
 		{
 			if (fushu == 1)
 			{
-				cout << "现在c是" << -c << endl ;
 				opnum.push(0-c) ;
 			}
 			else if (fuhao == 0)
 			{
-				cout << "现在c是" << c << endl ;
 				opnum.push(c) ;
 			}
 			else 
 			{
-				cout << "1输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			} 
 			maohao = 0 ;
@@ -151,30 +149,28 @@ int main ( ) // str 为输入的中序表达式
 			fushu = 0 ;
 			fuhao = 0 ;
 			cifang = 1 ;
-			cout << "现在有冒号" << maohao << "个" << endl ;
+			dig  = 0 ;
 		}
 		if(maohao > 2)
 		{
-			cout << "2输入错误，请退出程序重新输入" << endl ;
+			cout << endl <<  "：输入错误，请退出程序重新输入" << endl ;
 			return 0 ;			 
 		}
 		if (xiaoshu > 1)
 		{
-			cout << "3输入错误，请退出程序重新输入" << endl ;
+			cout << endl << "小数点输入错误，请退出程序重新输入" << endl ;
 			return 0 ;
 		}
 		if(end_out[k] == ':' )
 		{
 			maohao = maohao + 1 ;
-			cout << "现在有冒号" << maohao << "个" << endl ;
 		}
 		else if(isdigit(end_out[k]))
 		{
+			dig ++ ; 
 			if(maohao == 1 && xiaoshu == 0)
 			{
 				c = c*a + (end_out[k] - '0') * b ;
-				//cout << "现在c是" << c << endl ;
-				//opnum.push(c) ; 
 			}
 			else if (maohao == 1 && xiaoshu == 1)
 			{
@@ -187,22 +183,21 @@ int main ( ) // str 为输入的中序表达式
 			}
 			else //检验输入是否正确 
 			{
-				cout << "4输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "被计算数字输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			}
 		}
 		else if (end_out[k] == '.')
 		{
-			if (maohao == 1 && xiaoshu==0)
+			if (maohao == 1 && xiaoshu==0 && dig != 0)
 			{
 				a = 1 ;
 				b = 0.1;
 				xiaoshu = 1 ;
-				cout << "现在b是" << b << "," << (b*cifang) << endl ;
 			}
 			else
 			{
-				cout << "5输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "小数点输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			}
 		}
@@ -211,64 +206,65 @@ int main ( ) // str 为输入的中序表达式
 		{
 			if (end_out[k] == '+')
 			{ 
-				float n = opnum.top() ;
+				double n = opnum.top() ;
 				opnum.pop() ;
-				float o = opnum.top() ;
+				double o = opnum.top() ;
 				opnum.pop() ;
-				float count = o+n ;
-				cout << "现在是" << count << endl ;
+				double count = o+n ;
 				opnum.push(count) ;  
 			}
 			else if (end_out[k] == '-')
 			{
-				float n = opnum.top() ;
+				double n = opnum.top() ;
 				opnum.pop() ;
-				float o = opnum.top() ;
+				double o = opnum.top() ;
 				opnum.pop() ;
-				float count = o-n ;
-				cout << "现在是" << count << endl ;
+				double count = o-n ;
 				opnum.push(count) ;
 			}
 			else if (end_out[k] == '*')
 			{
-				float n = opnum.top() ;
+				double n = opnum.top() ;
 				opnum.pop() ;
-				float o = opnum.top() ;
+				double o = opnum.top() ;
 				opnum.pop() ;
-				float count = o * n ;
-				cout << "现在是" << count << endl ;
+				double count = o * n ;
 				opnum.push(count) ;
 			}
 			else if (end_out[k] == '/' )
 			{
-				float n = opnum.top() ;
+				double n = opnum.top() ;
 				opnum.pop() ;
-				float o = opnum.top() ;
+				double o = opnum.top() ;
 				opnum.pop() ;
-				float count = o / n ;
-				cout << "现在是" << count << endl ;
+				double count = o / n ;
 				opnum.push(count) ;
 			}
 			else if (end_out[k] == '#')
 			{
-				if(maohao == 1)
+				if(maohao == 1 && fushu == 0)
 				{
 					fushu = 1 ;
+				}
+				else 
+				{
+					cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
+					return 0 ;
 				} 
 			}
 			else
 			{
-				cout << "6输入有误，请退出程序重新输入" << endl ;
+				cout << endl << "计算符号输入有误，请退出程序重新输入" << endl ;
 				return 0 ;
 			}
 		}
 		else 
 		{
-			cout << "第" << k << "位输入有误，请退出程序重新输入" << endl ;
+			cout << endl << "第" << k << "位输入有误，请退出程序重新输入" << endl ;
 			return 0 ; 
 		}
 	}
 	//直到输入的string数组全部读完，如果数字栈中只有一个元素，则返回数字栈中的元素 ，否则返回输入有误 
-	cout <<  opnum.top()  ;
+	cout <<  endl << "答案是:" << opnum.top()  ;
 	return 0 ; 	
 }
