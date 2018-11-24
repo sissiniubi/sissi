@@ -6,6 +6,94 @@
 #include <math.h>
 
 using namespace std ;
+int is_symbol(char Equation){
+	if (!isalnum(Equation) && ( 
+	Equation == '+' || 
+	Equation == '-' || 
+	Equation == '*' || 
+	Equation == '/' ||
+	Equation == '#'
+	))
+	{return 1;}
+	return 0;
+}
+int jiancha (string str)
+{
+	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
+	for (int k=0 ; k < str.length() ; k++)
+	{ 
+		if (maohao == 2)
+		{
+			if (fushu!=1 || fushu!=0)
+			{
+				cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			} 
+			maohao = 0 ;
+			xiaoshu = 0 ;
+			fushu = 0 ;
+			fuhao = 0 ;
+			dig  = 0 ;
+		}
+		if(maohao > 2)
+		{
+			cout << endl <<  "：输入错误，请退出程序重新输入" << endl ;
+			return 0 ;			 
+		}
+		if (xiaoshu > 1)
+		{
+			cout << endl << "小数点输入错误，请退出程序重新输入" << endl ;
+			return 0 ;
+		}
+		if(str[k] == ':' )
+		{
+			maohao = maohao + 1 ;
+		}
+		else if(isdigit(str[k]))
+		{
+			dig ++ ; 
+			if(maohao != 1 || (xiaoshu != 0 && xiaoshu!=1)) 
+			{
+				cout << endl << "被计算数字输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
+		}
+		else if (str[k] == '.')
+		{
+			if (maohao == 1 && xiaoshu==0 && dig != 0)
+			{
+				xiaoshu = 1 ;
+			}
+			else
+			{
+				cout << endl << "小数点输入有误，请退出程序重新输入" << endl ;
+				return 0 ;
+			}
+		}
+		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
+		else if (is_symbol(str[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
+		{
+			if (maohao%2 == 1)
+			{
+				cout << endl << "冒号个数不对，请退出程序重新输入" ;
+				return 0 ;
+			}
+			if (str[k] == '#')
+			{
+				if(maohao == 1 && fushu == 0)
+				{
+					fushu = 1 ;
+				}
+				else 
+				{
+					cout << endl << "单目负（#）输入有误，请退出程序重新输入" << endl ;
+					return 0 ;
+				} 
+			}
+		}
+	}
+	return 1 ;
+}
 
 int is_niubi (char n) // 检测运算符号优先级 
 {
@@ -23,17 +111,6 @@ int is_niubi (char n) // 检测运算符号优先级
 	}
 }
 
-int is_symbol(char Equation){
-	if (!isalnum(Equation) && ( 
-	Equation == '+' || 
-	Equation == '-' || 
-	Equation == '*' || 
-	Equation == '/' ||
-	Equation == '#'
-	))
-	{return 1;}
-	return 0;
-}
 int main ( ) // str 为输入的中序表达式 
 {
 	char Equation;
@@ -43,7 +120,11 @@ int main ( ) // str 为输入的中序表达式
 	string str ;
 	int tem=0 ;
 	cout << "请输入需计算算式，每个数字之间以:隔开，形如:#12.4:，可进行+-*/单目负计算"  ;
-	cin >> str ; 
+	cin >> str ;
+	if (!jiancha(str))
+	{
+		return 0 ;
+	} 
 	//规定一个栈oprt为字符栈， 一个字符数组记录后续输出
 	stack <char> op ; 
 	string end_out ;
@@ -125,7 +206,7 @@ int main ( ) // str 为输入的中序表达式
 	stack <double> opnum ;
 	int maohao=0 ; int xiaoshu=0 ; int fushu=0 ; int fuhao=0 ; int dig=0 ;
 	for (int k=0 ; k < j ; k++)
-	{
+	{ 
 		if (maohao == 2)
 		{
 			if (fushu == 1)
@@ -204,6 +285,11 @@ int main ( ) // str 为输入的中序表达式
 		//如果是数字，就通过字符改变为数字，然后放入数字栈。（#数字直接变成0-的结果计入数字栈） 
 		else if (is_symbol(end_out[k]) )// 如果是加减乘除，就从数字栈中出两个数字进行对应运算，算完后再压回栈
 		{
+			if (maohao%2 == 1)
+			{
+				cout << endl << "冒号个数不对，请退出程序重新输入" ;
+				return 0 ;
+			}
 			if (end_out[k] == '+')
 			{ 
 				double n = opnum.top() ;
