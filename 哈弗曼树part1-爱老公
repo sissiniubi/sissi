@@ -1,0 +1,427 @@
+ # include <iostream> 
+ # include <fstream>
+ # include <sstream>
+ # include <string>
+ # include <map>
+ # include <stdlib.h>
+ 
+ using namespace std;
+ 
+class HNode
+{
+/*	private:
+		int weight;
+		char name;
+		HNode*left;
+		HNode*right;*/
+	public:
+		int weight;
+		char name;
+		char ident; 
+		HNode*left;
+		HNode*right;
+		HNode*father;
+		HNode(int w,char n,char i,HNode*l,HNode*r,HNode*f)
+		{
+			weight=w;
+			name=n;
+			ident=i;
+			left=l;
+			right=r;
+			father=f;
+		}
+		HNode(){}
+		
+/*		HNode(int w,char n)
+		{
+			
+			weight=w;
+			name=n;
+			left=right=NULL;
+
+		}*/
+		~HNode(){}
+		void setweight( int w)
+		{
+			weight=w;
+		}
+		void setname( char n)
+		{
+			name=n;
+		}
+		void setident(char i)
+		{
+			ident=i;
+		}
+		void setleft(HNode*l)
+		{
+			left=l;
+		}
+		void setright(HNode*r)
+		{
+			right=r;
+		}	
+		void setfather(HNode*f)
+		{
+			father=f;
+		}
+		
+		bool isleaf(HNode* root)
+		{
+			
+			if (root->name)
+			{
+				return true;
+			}
+		}	
+
+};
+/*
+HNode*rightson(HNode* root) 
+{
+	return root->right;
+}
+HNode*leftson(HNode* root) 
+{
+	return root->left;
+}
+HNode*whoisfather(HNode*node)
+{
+	return node->father;
+}
+int getweight(HNode*node)
+{
+	return node->weight;
+}
+char getname(HNode*node)
+{
+	return node->name;
+}
+
+
+void huffmancode(HNode* root,	map<char, string> huffman)
+{
+	string ss;
+	if (root==NULL) 
+	{
+		return;
+	}
+	if(root->left!=NULL)
+	{
+		huffmancode(leftson(root),huffman);
+		ss.append("0");			
+	}
+	if(root->right!=NULL)
+	{
+		huffmancode(rightson(root),huffman);
+		ss.append("1");			
+	}
+	if(root->left==NULL&&root->right==NULL)
+	{
+		huffman.insert(pair<char, string>(root->name, ss));
+	}
+}
+*/
+ string readfilechangestring(string filename)
+ {
+	ifstream infile;//用于打开文件
+    infile.open(filename.c_str(), ios::in);; //已读取的内容 
+	string line;
+	string output;
+    if (!infile)
+ 	{
+ 		cout<<"打开文件失败"; 
+	 }
+	while (!infile.eof()) 
+	{
+		getline(infile,line);
+		output.append(line);
+//		output.append("\n");
+
+	}
+	return output;
+ }
+ 
+ template<typename E>
+void exchange(E A[],int a,int b)
+{
+	E c;
+		c=A[a];
+		A[a]=A[b];
+		A[b]=c;
+}
+ 
+ void sorttwo (int a[],char b[],int n) 
+ {
+ 	int u;char v;
+ 	for (int k=0;k<n;k++)
+	{
+		for (int i=k+1;i<n;i++)
+		{
+		
+			if (a[k]<a[i])
+        	{
+        		u=a[i]; v=b[i];
+        		a[i]=a[k];b[i]=b[k];
+				a[k]=u;b[k]=v;
+			}
+		}
+	}
+ }
+ 
+  void sortthree (int a[],char b[],HNode*c[],int n) 
+ {
+ 	int u;char v;HNode *Node;;
+ 	for (int k=0;k<n;k++)
+	{
+		for (int i=k+1;i<n;i++)
+		{
+		
+			if (a[k]<a[i])
+        	{
+
+        		for(int j=k;j<i;j++)
+        		{
+        			exchange(a,i,j);
+        			exchange(b,i,j);
+        			exchange(c,i,j);
+				}
+			}
+			
+		}
+	}
+ }
+
+ int chuli(char b[],int n,char x)
+ {
+
+ 	for(int i=0;i<n;i++)
+ 	{
+ 		if(x==b[i])
+ 		{
+ 			return 1;
+		}
+	}
+	return 0;
+ }
+ 
+ void changestringtoarray(string str,int a[],char b[]) //count 固定为0 
+ {
+ 	 
+ 	int count=0;
+	int n=str.length();
+ 	for (int i=0;i<n;i++)
+ 	{
+ 		if(chuli(b,count,str[i]) ==0)
+ 		{
+ 			b[count]=str[i];
+ 			a[count]=1;
+ 			count++;
+		 }
+		 else
+		 {
+ 			for(int j=0;j<count;j++)
+ 			{
+ 				if(str[i]==b[j])
+ 				{
+ 					a[j]++;	
+				}
+			}
+		}
+	}
+ }
+ 
+ void leafcode(int a[],char b[],HNode*c[],HNode d[],int count)
+ {
+ //	HNode x;
+ 	int n=count;
+ 	for (int i=0;i<count;i++)
+ 	{
+		d[i].weight=a[i];	
+		d[i].name=b[i];	
+//		d[i].setleft(&x);
+//		d[i].setright(&x);
+		c[i]=&d[i];
+		cout<<c[i]->name<<" ";
+		
+	}
+	for (int j=count-1;j>0;j--)
+	{
+		a[n]=a[j]+a[j-1];
+
+		d[n].setweight(a[n]);
+		d[n].setleft(c[j]);
+		d[n].setright(c[j-1]);
+
+
+		c[n]=&d[n];
+		c[j]->setfather(c[n]);
+		c[j-1]->setfather(c[n]);
+
+
+		c[j]->setident('l');
+
+		c[j-1]->setident('r');
+//		cout << " 当前节点 " << c[n]->name<<" "<<c[n]->weight <<endl;
+//		cout << " 当前节点左son " << c[n]->left->name << " "<<c[n]->left->weight <<endl;
+//		cout << " 当前节点右son " << c[n]->right->name << " "<<c[n]->right->weight<<endl ;
+		n++;
+		sortthree (a,b,c,n);
+
+	}
+ }
+ 
+ string coding(HNode*c[],char x,int count)
+ {
+ 	int n=1;HNode*node;string ss;
+ 	for(int i=0;i<count;i++)
+ 	{
+ 		if(c[i]->name)
+ 		{
+ 			if(c[i]->name==x)
+ 			{
+ //				cout<<c[i]->name<<endl;
+ 				n=i;
+ //				cout<<"第一个for"<<" "<<n<<endl;
+
+			 }
+		}
+	}
+	node=c[n];
+//	cout<<c[n]->name<<endl;
+//	cout<<"第个for"<<" "<<n<<endl;
+//	cout << node->weight<<endl ;
+	while(node->father->weight<=c[0]->weight)
+	{
+//		cout<<"ssss"<<endl;
+//		if(node->father->left->weight==node->weight)
+		if(node->ident=='l')
+		{
+			
+			ss.append("0");
+//			cout<<ss<<endl;
+		}
+		else
+		{
+			ss.append("1");
+//			cout<<ss<<endl;
+		}
+		node=node->father;
+		if(node->weight==c[0]->weight)
+		{
+			break;
+		}
+	}
+//	cout<<"nani";
+	return ss;
+ }
+ 
+  string transtring(string ss)
+ {
+ 	string oput=ss;
+ 	for(int i=0;i<ss.size();i++)
+ 	{
+ 		oput[i]=ss[ss.size()-i-1];
+	}
+	for(int j=0;j<ss.size();j++)
+	{
+		ss[j]=oput[j];
+	}
+	return ss;
+ }
+
+ int main()
+ {
+ 	//	ifstream infile;//用于打开文件
+ 	string fname ;
+ 	cout << "请将待输入文件保存于此文件夹，并输入文件名称";
+ 	cin >>fname;
+    string str=readfilechangestring(fname);
+
+ 	int n=str.length(); int count=0;
+ 	int a[2*n];char b[2*n]; HNode*c[2*n];HNode d[2*n];
+ 	changestringtoarray(str,a,b);
+ 	while(b[count])
+ 	{
+ 		count++;
+	 }
+
+ 	sorttwo (a,b,count);
+ 	for (int i=0;i<count;i++)
+ 	{
+ 		cout<<a[i]<<" "<<b[i]<<endl;
+	 }
+	leafcode(a,b,c,d,count);
+	count=0;
+	while(a[count])
+ 	{
+ 		count++;
+	 }
+//	cout<<count<<endl;
+	HNode*root=c[0];
+
+//	cout<<"zhongyao"<<" "<<c[0]->left->left->right->name<<endl;
+
+//	cout<<transtring(coding(c,'g',count));
+//	cout<<transtring(coding(c,'f',count));
+//	cout<<transtring(coding(c,'9',count));
+
+for(int i=0;i<str.length();i++)
+{
+	cout<<str[i]<<" "<<transtring(coding(c,str[i],count))<<endl;
+}
+
+
+	return 0;
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ /*
+ #include <iostream>//标准输入输出头文件
+#include <fstream>//文件读取头文件
+ 
+using namespace std;//std命名空间
+ 
+int main()
+{
+    ifstream infile;//用于打开文件
+    string file_name;//文件名
+    string line;//读取文件时保存当前行
+ 
+    cout << "请输入文件名：";
+    cin >> file_name;//获取输入的文件名
+    infile.open(file_name.c_str(), ios::in);//根据文件名打开文件，打开方式是读取
+    if (!infile)//如果没有找到这个文件
+    {
+        cerr << "打开文件" << file_name << "失败" << endl;
+        return -1;
+    }
+ 
+    while(!infile.eof())//判断是否读完
+    {
+        if (infile.peek() == EOF)//判断是否读完
+            break;
+        getline(infile, line);//获取一行内容
+        cout << line << endl;//显示这一行
+    }
+ 
+    infile.close();//关闭文件
+    return 0;
+}
+*/
